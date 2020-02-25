@@ -172,7 +172,9 @@ void Router::handle_serial_read(const boost::system::error_code& error,
         for (int i = 0; i < bytes_transferred; i++) {
             uint8_t res = mavlink_parse_char(MAVLINK_COMM_0, (uint8_t)data[i], &msg, &m_mavlink_status);
             if (res) {
-                add_known_sys_id(msg.sysid);
+                if (msg.sysid != 0) {
+                    add_known_sys_id(msg.sysid);
+                }
                 process_mavlink_message(false, nullptr, msg);
             }
         }
