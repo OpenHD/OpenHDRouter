@@ -5,6 +5,7 @@
 #include <boost/bind.hpp>
 
 #include <openhd/mavlink.h>
+#include <mavlink_types.h>
 
 
 #include "router.h"
@@ -94,10 +95,10 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
 
     if (entry) {
         if (entry->flags & MAV_MSG_ENTRY_FLAG_HAVE_TARGET_SYSTEM) {
-            target_sys_id = msg.payload64[entry->target_system_ofs];
+            target_sys_id = (_MAV_PAYLOAD(&msg))[entry->target_system_ofs];
         }
         if (entry->flags & MAV_MSG_ENTRY_FLAG_HAVE_TARGET_COMPONENT) {
-            target_comp_id = msg.payload64[entry->target_component_ofs];
+            target_comp_id = (_MAV_PAYLOAD(&msg))[entry->target_component_ofs];
         }
     }
 
