@@ -28,6 +28,7 @@ public:
             }
         }
         if (!found) {
+            std::cout << "Adding known sys ID for TCP endpoint: " << static_cast<int16_t>(sys_id) << std::endl;
             m_known_sys_ids.push_back(sys_id);
         }
     }
