@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenHD Router
+After=network.target auditd.service
+
+[Service]
+Restart=always
+Type=simple
+ExecStart=/usr/local/bin/openhd_router --tcp-port 5761 --serial-port /dev/openhd_microservice1
+
+[Install]
+WantedBy=multi-user.target
+Alias=openhd_router.service
