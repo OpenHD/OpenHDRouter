@@ -20,6 +20,7 @@ Router::Router(boost::asio::io_service &io_service, int tcp_port, std::string se
         m_serial.open(serial_port);
     } catch (boost::system::system_error::exception e) {
         std::cerr << "Router::Router(): failed to open serial port: " << serial_port << std::endl;
+        exit(1);
     }
 
     try {
@@ -30,6 +31,7 @@ Router::Router(boost::asio::io_service &io_service, int tcp_port, std::string se
         m_serial.set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one));
     } catch (boost::system::system_error::exception e) {
         std::cerr << "Router::Router(): failed to set serial parameters on: " << serial_port << std::endl;
+        exit(1);
     }
     start_accept();
 }
