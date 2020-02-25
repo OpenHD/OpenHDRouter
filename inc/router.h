@@ -28,7 +28,7 @@ public:
     void handle_serial_write(const boost::system::error_code& error,
                              size_t bytes_transferred);
 
-    void add_known_sys_id(int8_t sys_id) {
+    void add_known_sys_id(uint8_t sys_id) {
         bool found = false;
         for(auto const& known_sys_id: m_known_sys_ids) {
             if (known_sys_id == sys_id) {
@@ -40,7 +40,7 @@ public:
         }
     }
 
-    bool seen_sys_id(int8_t sys_id) {
+    bool seen_sys_id(uint8_t sys_id) {
         bool found = false;
         for(auto const& known_sys_id: m_known_sys_ids) {
             if (known_sys_id == sys_id) {
@@ -56,7 +56,7 @@ protected:
     enum { max_length = 1024 };
     char data[max_length];
 
-    std::vector<int8_t> m_known_sys_ids;
+    std::vector<uint8_t> m_known_sys_ids;
 
     boost::asio::io_service &m_io_service;
     std::vector<std::shared_ptr<Endpoint> > m_endpoints;

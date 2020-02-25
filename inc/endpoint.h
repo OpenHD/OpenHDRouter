@@ -20,7 +20,7 @@ public:
 
     void start();
 
-    void add_known_sys_id(int8_t sys_id) {
+    void add_known_sys_id(uint8_t sys_id) {
         bool found = false;
         for(auto const& known_sys_id: m_known_sys_ids) {
             if (known_sys_id == sys_id) {
@@ -32,7 +32,7 @@ public:
         }
     }
 
-    bool seen_sys_id(int8_t sys_id) {
+    bool seen_sys_id(uint8_t sys_id) {
         bool found = false;
         for(auto const& known_sys_id: m_known_sys_ids) {
             if (known_sys_id == sys_id) {
@@ -56,7 +56,7 @@ protected:
 
     Router *m_router = nullptr;
 
-    std::vector<int8_t> m_known_sys_ids;
+    std::vector<uint8_t> m_known_sys_ids;
 
 
     enum { max_length = 1024 };
