@@ -32,12 +32,14 @@ int main(int argc, char *argv[]) {
             std::cerr << "No tcp port provided" << std::endl;
             exit(1);
         }
+
         int tcp_port = vm["tcp-port"].as<int>();
 
-       if (vm.count("serial-port") == 0) {
+        if (vm.count("serial-port") == 0) {
             std::cerr << "No serial port provided" << std::endl;
             exit(1);
         }
+
         std::string serial_port = vm["serial-port"].as<std::string>();
 
         router = new Router(io_context, tcp_port, serial_port);

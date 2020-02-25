@@ -93,7 +93,7 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
      * however we do not need to care about component IDs for routing purposes, only system IDs
      *
      */
-    for(auto const& endpoint: m_endpoints) {
+    for (auto const& endpoint: m_endpoints) {
         auto send = false;
         if (target_sys_id == -1) {
             send = true;
