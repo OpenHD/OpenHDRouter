@@ -12,7 +12,7 @@
 
 class Router {
 public:
-    Router(boost::asio::io_context &io_context, int tcp_port, std::string serial_port);
+    Router(boost::asio::io_service &io_service, int tcp_port, std::string serial_port);
     void setup();
 
     void start_accept();
@@ -57,7 +57,7 @@ protected:
 
     std::vector<int8_t> m_known_sys_ids;
 
-    boost::asio::io_context &m_io_context;
+    boost::asio::io_service &m_io_service;
     std::vector<std::shared_ptr<Endpoint> > m_endpoints;
     boost::asio::ip::tcp::acceptor m_tcp_acceptor;
     boost::asio::serial_port m_serial;

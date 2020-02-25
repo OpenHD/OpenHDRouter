@@ -11,10 +11,10 @@
 #include "endpoint.h"
 
 
-Router::Router(boost::asio::io_context &io_context, int tcp_port, std::string serial_port):
-    m_io_context(io_context),
-    m_tcp_acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), tcp_port)),
-    m_serial(io_context) {
+Router::Router(boost::asio::io_service &io_service, int tcp_port, std::string serial_port):
+    m_io_service(io_service),
+    m_tcp_acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), tcp_port)),
+    m_serial(io_service) {
 
     try {
         m_serial.open(serial_port);
@@ -44,7 +44,7 @@ void Router::setup() {
 void Router::start_accept() {
     std::cerr << "Router::start_accept()" << std::endl;
 
-    Endpoint::pointer new_connection = Endpoint::create(this, m_io_context);
+    Endpoint::pointer new_connection = Endpoint::create(this, m_io_service);
 
     m_tcp_acceptor.async_accept(new_connection->get_socket(),
                                 boost::bind(&Router::handle_accept,

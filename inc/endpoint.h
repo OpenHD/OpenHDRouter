@@ -14,8 +14,8 @@ class Endpoint: public std::enable_shared_from_this<Endpoint> {
 public:
     typedef std::shared_ptr<Endpoint> pointer;
 
-    static pointer create(Router *router, boost::asio::io_context& io_context) {
-        return pointer(new Endpoint(router, io_context));
+    static pointer create(Router *router, boost::asio::io_service& io_service) {
+        return pointer(new Endpoint(router, io_service));
     }
 
     void start();
@@ -66,7 +66,7 @@ protected:
 
     mavlink_status_t m_mavlink_status;
 private:
-  Endpoint(Router *router, boost::asio::io_context& io_context): m_router(router), m_socket(io_context) {}
+  Endpoint(Router *router, boost::asio::io_service& io_service): m_router(router), m_socket(io_service) {}
 };
 
 #endif // ENDPOINT_H

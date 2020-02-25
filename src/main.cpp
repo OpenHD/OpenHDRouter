@@ -8,7 +8,7 @@
 #include "router.h"
 
 int main(int argc, char *argv[]) {
-    boost::asio::io_context io_context;
+    boost::asio::io_service io_service;
 
     Router *router = nullptr;
 
@@ -42,9 +42,9 @@ int main(int argc, char *argv[]) {
 
         std::string serial_port = vm["serial-port"].as<std::string>();
 
-        router = new Router(io_context, tcp_port, serial_port);
+        router = new Router(io_service, tcp_port, serial_port);
         router->setup();
-        io_context.run();
+        io_service.run();
     } catch (std::exception &ex) {
         std::cerr << "Error: " << ex.what() << std::endl;
         exit(1);
