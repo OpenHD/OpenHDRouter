@@ -16,6 +16,7 @@ public:
     void setup();
 
     void start_accept();
+    void start_serial_read();
     void handle_accept(Endpoint::pointer new_connection, const boost::system::error_code& error);
     void close_endpoint(std::shared_ptr<Endpoint> endpoint);
 

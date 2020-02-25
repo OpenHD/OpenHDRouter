@@ -55,6 +55,16 @@ void Router::start_accept() {
                                             boost::asio::placeholders::error));
 }
 
+void Router::start_serial_read() {
+    std::cerr << "Router::start_serial_read()" << std::endl;
+
+    m_serial.async_read_some(boost::asio::buffer(data, max_length),
+                             boost::bind(&Router::handle_serial_read,
+                                         this,
+                                         boost::asio::placeholders::error,
+                                         boost::asio::placeholders::bytes_transferred));
+}
+
 
 void Router::handle_accept(Endpoint::pointer new_connection, const boost::system::error_code& error) {
     std::cerr << "Router::handle_accept()" << std::endl;
@@ -165,9 +175,5 @@ void Router::handle_serial_read(const boost::system::error_code& error,
             }
         }
     }
-    m_serial.async_read_some(boost::asio::buffer(data, max_length),
-                             boost::bind(&Router::handle_serial_read,
-                                         this,
-                                         boost::asio::placeholders::error,
-                                         boost::asio::placeholders::bytes_transferred));
+    start_serial_read();
 }
