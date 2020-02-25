@@ -47,7 +47,7 @@ void Endpoint::handle_read(std::shared_ptr<Endpoint>& s,
             uint8_t res = mavlink_parse_char(MAVLINK_COMM_0, (uint8_t)data[i], &msg, &m_mavlink_status);
             if (res) {
                 add_known_sys_id(msg.sysid);
-                m_router->process_mavlink_message(false, shared_from_this(), msg);
+                m_router->process_mavlink_message(true, shared_from_this(), msg);
             }
         }
         m_socket.async_read_some(boost::asio::buffer(data, max_length),
