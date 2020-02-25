@@ -164,10 +164,10 @@ void Router::handle_serial_read(const boost::system::error_code& error,
                 process_mavlink_message(true, nullptr, msg);
             }
         }
-        m_serial.async_read_some(boost::asio::buffer(data, max_length),
-                                 boost::bind(&Router::handle_serial_read,
-                                             this,
-                                             boost::asio::placeholders::error,
-                                             boost::asio::placeholders::bytes_transferred));
     }
+    m_serial.async_read_some(boost::asio::buffer(data, max_length),
+                             boost::bind(&Router::handle_serial_read,
+                                         this,
+                                         boost::asio::placeholders::error,
+                                         boost::asio::placeholders::bytes_transferred));
 }
