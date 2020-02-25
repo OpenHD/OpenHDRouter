@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
             std::cerr << desc << std::endl;
             exit(0);
         }
-        
+
         if (vm.count("tcp-port") == 0) {
             std::cerr << "No tcp port provided" << std::endl;
             exit(1);

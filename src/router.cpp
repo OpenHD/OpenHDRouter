@@ -46,10 +46,10 @@ void Router::start_accept() {
 
     Endpoint::pointer new_connection = Endpoint::create(this, m_io_context);
 
-    m_tcp_acceptor.async_accept(new_connection->get_socket(), 
-                                boost::bind(&Router::handle_accept, 
-                                            this, 
-                                            new_connection, 
+    m_tcp_acceptor.async_accept(new_connection->get_socket(),
+                                boost::bind(&Router::handle_accept,
+                                            this,
+                                            new_connection,
                                             boost::asio::placeholders::error));
 }
 
@@ -88,10 +88,10 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
         }
     }
 
-    /* 
+    /*
      * This implements the routing logic described in https://ardupilot.org/dev/docs/mavlink-routing-in-ardupilot.html,
      * however we do not need to care about component IDs for routing purposes, only system IDs
-     * 
+     *
      */
     for(auto const& endpoint: m_endpoints) {
         auto send = false;
@@ -114,7 +114,7 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
 
         if (send) {
             endpoint->send_message(buf, size);
-        }        
+        }
     }
 
     auto send_serial = false;
@@ -127,9 +127,9 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
     }
 
     if (source_is_tcp && send_serial) {
-        boost::asio::async_write(m_serial, 
+        boost::asio::async_write(m_serial,
                                  boost::asio::buffer(buf, size),
-                                 boost::bind(&Router::handle_serial_write, 
+                                 boost::bind(&Router::handle_serial_write,
                                              this,
                                              boost::asio::placeholders::error,
                                              boost::asio::placeholders::bytes_transferred));
@@ -145,11 +145,11 @@ void Router::close_endpoint(std::shared_ptr<Endpoint> endpoint) {
 }
 
 
-void Router::handle_serial_write(const boost::system::error_code& error, 
+void Router::handle_serial_write(const boost::system::error_code& error,
                                  size_t bytes_transferred) {}
 
 
-void Router::handle_serial_read(const boost::system::error_code& error, 
+void Router::handle_serial_read(const boost::system::error_code& error,
                                 size_t bytes_transferred) {
     std::cerr << "Router::handle_serial_read()" << std::endl;
 
@@ -163,7 +163,7 @@ void Router::handle_serial_read(const boost::system::error_code& error,
             }
         }
         m_serial.async_read_some(boost::asio::buffer(data, max_length),
-                                 boost::bind(&Router::handle_serial_read, 
+                                 boost::bind(&Router::handle_serial_read,
                                              this,
                                              boost::asio::placeholders::error,
                                              boost::asio::placeholders::bytes_transferred));

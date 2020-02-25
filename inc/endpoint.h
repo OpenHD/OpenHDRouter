@@ -18,7 +18,7 @@ public:
         return pointer(new Endpoint(router, io_context));
     }
 
-    void start();    
+    void start();
 
     void add_known_sys_id(int8_t sys_id) {
         bool found = false;
@@ -47,7 +47,7 @@ public:
     boost::asio::ip::tcp::socket& get_socket();
 
 protected:
-    void handle_write(const boost::system::error_code& error, 
+    void handle_write(const boost::system::error_code& error,
                       size_t bytes_transferred);
 
     void handle_read(std::shared_ptr<Endpoint>& s,
@@ -58,7 +58,7 @@ protected:
 
     std::vector<int8_t> m_known_sys_ids;
 
-    
+
     enum { max_length = 1024 };
     char data[max_length];
 

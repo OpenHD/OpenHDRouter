@@ -28,7 +28,7 @@ void Endpoint::start() {
 }
 
 
-void Endpoint::handle_write(const boost::system::error_code& error, 
+void Endpoint::handle_write(const boost::system::error_code& error,
                             size_t bytes_transferred) {
     if (error) {
         m_router->close_endpoint(shared_from_this());
@@ -51,7 +51,7 @@ void Endpoint::handle_read(std::shared_ptr<Endpoint>& s,
             }
         }
         m_socket.async_read_some(boost::asio::buffer(data, max_length),
-                                 boost::bind(&Endpoint::handle_read, 
+                                 boost::bind(&Endpoint::handle_read,
                                              this,
                                              shared_from_this(),
                                              boost::asio::placeholders::error,

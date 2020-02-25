@@ -15,16 +15,16 @@ public:
     Router(boost::asio::io_context &io_context, int tcp_port, std::string serial_port);
     void setup();
 
-    void start_accept();    
+    void start_accept();
     void handle_accept(Endpoint::pointer new_connection, const boost::system::error_code& error);
     void close_endpoint(std::shared_ptr<Endpoint> endpoint);
 
-    void handle_serial_read(const boost::system::error_code& error, 
+    void handle_serial_read(const boost::system::error_code& error,
                             size_t bytes_transferred);
 
     void process_mavlink_message(bool source_is_tcp, Endpoint::pointer source_endpoint, mavlink_message_t msg);
 
-    void handle_serial_write(const boost::system::error_code& error, 
+    void handle_serial_write(const boost::system::error_code& error,
                              size_t bytes_transferred);
 
     void add_known_sys_id(int8_t sys_id) {
