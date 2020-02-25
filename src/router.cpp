@@ -81,8 +81,6 @@ void Router::handle_accept(Endpoint::pointer new_connection, const boost::system
 
 
 void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer source_endpoint, mavlink_message_t msg) {
-    std::cerr << "Router::process_mavlink_message()" << std::endl;
-
     uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 
     auto size = mavlink_msg_to_send_buffer(buf, &msg);
@@ -101,6 +99,8 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
             target_comp_id = (_MAV_PAYLOAD(&msg))[entry->target_component_ofs];
         }
     }
+
+    std::cerr << "Processing message " << msg.msgid << " from " << static_cast<int16_t>(msg.sysid) << ":" << static_cast<int16_t>(msg.compid) << " to " << static_cast<int16_t>(target_sys_id) << ":" << static_cast<int16_t>(target_comp_id) << std::endl;
 
     /*
      * This implements the routing logic described in https://ardupilot.org/dev/docs/mavlink-routing-in-ardupilot.html,
@@ -148,6 +148,7 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
                                              boost::asio::placeholders::error,
                                              boost::asio::placeholders::bytes_transferred));
     }
+    std::cerr << "----------------------------------------------------------------------------------------------------" << std::endl;
 }
 
 
