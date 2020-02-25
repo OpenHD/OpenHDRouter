@@ -34,6 +34,7 @@ Router::Router(boost::asio::io_service &io_service, int tcp_port, std::string se
         exit(1);
     }
     start_accept();
+    start_serial_read();
 }
 
 
