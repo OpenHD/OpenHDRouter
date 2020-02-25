@@ -160,7 +160,9 @@ void Router::close_endpoint(std::shared_ptr<Endpoint> endpoint) {
 
 
 void Router::handle_serial_write(const boost::system::error_code& error,
-                                 size_t bytes_transferred) {}
+                                 size_t bytes_transferred) {
+    std::cerr << "Router::handle_serial_write()" << std::endl;
+}
 
 
 void Router::handle_serial_read(const boost::system::error_code& error,
