@@ -32,7 +32,6 @@ install: openhd_router
 	install -m 755 openhd_router $(PREFIX)/bin/
 	install -m 644 openhd_router.service /etc/systemd/system/
 	install -d /etc/openhd
-	install -m 644 openhd_router.conf /etc/openhd/
 
 .PHONY: enable
 enable: install
