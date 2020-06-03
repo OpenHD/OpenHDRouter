@@ -7,6 +7,10 @@ ifeq ($(PREFIX),)
 	PREFIX := /usr/local
 endif
 
+ifdef $(DESTDIR)
+	$(DESTDIR) := $(DESTDIR)/
+endif
+
 SYSTEM_INCLUDE = $(PREFIX)/include
 LDFLAGS = -L$(PREFIX)/lib -lboost_system -lboost_program_options
 
@@ -28,10 +32,11 @@ clean:
 
 .PHONY: install
 install: openhd_router
-	install -d $(PREFIX)/bin/
-	install -m 755 openhd_router $(PREFIX)/bin/
-	install -m 644 openhd_router.service /etc/systemd/system/
-	install -d /etc/openhd
+	install -d $(DESTDIR)$(PREFIX)/bin/
+	install -d $(DESTDIR)/etc/systemd/system
+	install -m 755 openhd_router $(DESTDIR)$(PREFIX)/bin/
+	install -m 644 openhd_router.service $(DESTDIR)/etc/systemd/system/
+	install -d $(DESTDIR)/etc/openhd
 
 .PHONY: enable
 enable: install
