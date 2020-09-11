@@ -52,7 +52,7 @@ void Router::handle_accept(Endpoint::pointer new_connection, const boost::system
 }
 
 
-void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer source_endpoint, mavlink_message_t msg) {
+void Router::process_mavlink_message(bool source_is_net, Endpoint::pointer source_endpoint, mavlink_message_t msg) {
     uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 
     auto size = mavlink_msg_to_send_buffer(buf, &msg);
@@ -90,7 +90,7 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
         }
 
         // don't send the packet right back out the interface it came from
-        if (source_is_tcp) {
+        if (source_is_net) {
             if (source_endpoint != nullptr) {
                 if (source_endpoint == endpoint) {
                     send = false;
@@ -112,7 +112,7 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
         send_serial = seen_sys_id(target_sys_id);
     }
 
-    if (source_is_tcp && send_serial) {
+    if (source_is_net && send_serial) {
         m_serial.write(buf, size);
     }
 

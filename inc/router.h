@@ -23,7 +23,7 @@ public:
     void handle_serial_read(char* buffer,
                             size_t size);
 
-    void process_mavlink_message(bool source_is_tcp, Endpoint::pointer source_endpoint, mavlink_message_t msg);
+    void process_mavlink_message(bool source_is_net, Endpoint::pointer source_endpoint, mavlink_message_t msg);
 
     void add_known_sys_id(uint8_t sys_id) {
         bool found = false;
