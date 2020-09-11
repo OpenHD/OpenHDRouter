@@ -16,8 +16,7 @@ Serial::Serial(boost::asio::io_service &io_service, Router* router, int baud, st
     try {
         m_serial.open(serial_port);
     } catch (boost::system::system_error::exception e) {
-        std::cerr << "Serial::Serial(): failed to open serial port: " << serial_port << std::endl;
-        exit(1);
+        return;
     }
 
     try {
@@ -42,6 +41,10 @@ void Serial::setup() {
 
 
 void Serial::write(uint8_t* buffer, size_t size) {
+    if (!m_serial.is_open()) {
+        return;
+    }
+
     boost::asio::async_write(m_serial,
                              boost::asio::buffer(buffer, size),
                              boost::bind(&Serial::handle_serial_write,

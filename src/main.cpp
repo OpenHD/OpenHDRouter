@@ -18,8 +18,8 @@ int main(int argc, char *argv[]) {
 
         desc.add_options()("help", "produce help message")
                           ("tcp-port", boost::program_options::value<int>()->required(), "tcp server port")
-                          ("serial-baud,b", boost::program_options::value<int>()->required(), "serial port baud")
-                          ("serial-port", boost::program_options::value<std::string>()->required(), "serial port to use");
+                          ("serial-baud,b", boost::program_options::value<int>()->default_value(115200), "serial port baud")
+                          ("serial-port", boost::program_options::value<std::string>()->default_value(""), "serial port to use");
 
         boost::program_options::variables_map vm;
         boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
@@ -37,21 +37,13 @@ int main(int argc, char *argv[]) {
 
         int tcp_port = vm["tcp-port"].as<int>();
 
-        if (vm.count("serial-port") == 0) {
-            std::cerr << "No serial port provided" << std::endl;
-            exit(1);
+        std::string serial_port;
+        int baud = 115200;
+
+        if (vm.count("serial-port") == 1) {
+            serial_port = vm["serial-port"].as<std::string>();
+            baud = vm["serial-baud"].as<int>();
         }
-
-        std::string serial_port = vm["serial-port"].as<std::string>();
-
-
-        if (vm.count("serial-baud") == 0) {
-            std::cerr << "No serial port baud rate provided" << std::endl;
-            exit(1);
-        }
-
-        int baud = vm["serial-baud"].as<int>();
-
 
         router = new Router(io_service, tcp_port, baud, serial_port);
         router->setup();
