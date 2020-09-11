@@ -21,26 +21,29 @@ void UDPEndpoint::setup(std::string endpoint_s) {
 
     boost::smatch result;
 
-    boost::regex r{ "([\\w\\d\\.]+)\\:([\\d]+)"};
+    boost::regex r{ "([\\d]+)\\:([\\w\\d\\.]+)\\:([\\d]+)"};
     if (!boost::regex_match(endpoint_s, result, r)) {
         std::cerr << "Failed to match regex" << std::endl;
         return;
     }
 
-    if (result.size() != 3) {
+    if (result.size() != 4) {
         std::cerr << "Failed size" << std::endl;
 
         return;
     }
 
-    std::string address = result[1];
-    std::string port_s = result[2];
+    std::string local_port_s = result[1];
+    uint16_t local_port = atoi(local_port_s.c_str());
+
+    std::string address = result[2];
+    std::string port_s = result[3];
     uint16_t port = atoi(port_s.c_str());
 
 
     m_endpoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(address), port);
     m_udp_socket.open(boost::asio::ip::udp::v4());
-    m_udp_socket.bind(boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), 0));
+    m_udp_socket.bind(boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), local_port));
 
     start_receive();
 }
