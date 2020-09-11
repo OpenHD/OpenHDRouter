@@ -40,6 +40,7 @@ fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION//v} -C ${TM
   -p ${PACKAGE_NAME}_VERSION_ARCH.deb \
   -d "libasio-dev >= 1.10" \
   -d "libboost-system-dev >= 1.62.0" \
+  -d "libboost-regex-dev >= 1.62.0" \
   -d "libboost-program-options-dev >= 1.62.0"  || exit 1
 
 #
