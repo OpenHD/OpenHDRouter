@@ -15,8 +15,8 @@ SYSTEM_INCLUDE = $(PREFIX)/include
 LDFLAGS = -L$(PREFIX)/lib -lboost_system -lboost_program_options
 
 
-openhd_router: router.o endpoint.o main.o 
-	g++ -std=c++11 -g -pthread -o openhd_router router.o endpoint.o main.o $(LDFLAGS)
+openhd_router: serial.o router.o endpoint.o main.o 
+	g++ -std=c++11 -g -pthread -o openhd_router serial.o router.o endpoint.o main.o $(LDFLAGS)
 
 main.o: $(SRC_DIR)/main.cpp
 	g++ -std=c++11  -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(INC_DIR) $(SRC_DIR)/main.cpp
@@ -26,6 +26,10 @@ router.o: $(SRC_DIR)/router.cpp
 
 endpoint.o: $(SRC_DIR)/endpoint.cpp
 	g++ -std=c++11 -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(INC_DIR) $(SRC_DIR)/endpoint.cpp
+
+serial.o: $(SRC_DIR)/serial.cpp
+	g++ -std=c++11 -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(INC_DIR) $(SRC_DIR)/serial.cpp
+
 
 clean:
 	rm -f *.o openhd_router

@@ -12,30 +12,12 @@
 #include "endpoint.h"
 
 
-Router::Router(boost::asio::io_service &io_service, int tcp_port, std::string serial_port):
+Router::Router(boost::asio::io_service &io_service, int tcp_port, int baud, std::string serial_port):
     m_io_service(io_service),
     m_tcp_acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), tcp_port)),
-    m_serial(io_service) {
+    m_serial(io_service, this, baud, serial_port) {
 
-    try {
-        m_serial.open(serial_port);
-    } catch (boost::system::system_error::exception e) {
-        std::cerr << "Router::Router(): failed to open serial port: " << serial_port << std::endl;
-        exit(1);
-    }
-
-    try {
-        m_serial.set_option(boost::asio::serial_port_base::baud_rate(115200));
-        m_serial.set_option(boost::asio::serial_port_base::character_size(8));
-        m_serial.set_option(boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
-        m_serial.set_option(boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none));
-        m_serial.set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one));
-    } catch (boost::system::system_error::exception e) {
-        std::cerr << "Router::Router(): failed to set serial parameters on: " << serial_port << std::endl;
-        exit(1);
-    }
     start_accept();
-    start_serial_read();
 }
 
 
@@ -55,16 +37,6 @@ void Router::start_accept() {
                                             this,
                                             new_connection,
                                             boost::asio::placeholders::error));
-}
-
-void Router::start_serial_read() {
-    std::cerr << "Router::start_serial_read()" << std::endl;
-
-    m_serial.async_read_some(boost::asio::buffer(data, max_length),
-                             boost::bind(&Router::handle_serial_read,
-                                         this,
-                                         boost::asio::placeholders::error,
-                                         boost::asio::placeholders::bytes_transferred));
 }
 
 
@@ -141,13 +113,9 @@ void Router::process_mavlink_message(bool source_is_tcp, Endpoint::pointer sourc
     }
 
     if (source_is_tcp && send_serial) {
-        boost::asio::async_write(m_serial,
-                                 boost::asio::buffer(buf, size),
-                                 boost::bind(&Router::handle_serial_write,
-                                             this,
-                                             boost::asio::placeholders::error,
-                                             boost::asio::placeholders::bytes_transferred));
+        m_serial.write(buf, size);
     }
+
     std::cerr << "----------------------------------------------------------------------------------------------------" << std::endl;
 }
 
@@ -160,27 +128,18 @@ void Router::close_endpoint(std::shared_ptr<Endpoint> endpoint) {
 }
 
 
-void Router::handle_serial_write(const boost::system::error_code& error,
-                                 size_t bytes_transferred) {
-    std::cerr << "Router::handle_serial_write()" << std::endl;
-}
-
-
-void Router::handle_serial_read(const boost::system::error_code& error,
-                                size_t bytes_transferred) {
+void Router::handle_serial_read(char* buffer,
+                                size_t size) {
     std::cerr << "Router::handle_serial_read()" << std::endl;
 
-    if (!error) {
-        mavlink_message_t msg;
-        for (int i = 0; i < bytes_transferred; i++) {
-            uint8_t res = mavlink_parse_char(MAVLINK_COMM_0, (uint8_t)data[i], &msg, &m_mavlink_status);
-            if (res) {
-                if (msg.sysid != 0) {
-                    add_known_sys_id(msg.sysid);
-                }
-                process_mavlink_message(false, nullptr, msg);
+    mavlink_message_t msg;
+    for (int i = 0; i < size; i++) {
+        uint8_t res = mavlink_parse_char(MAVLINK_COMM_0, (uint8_t)buffer[i], &msg, &m_mavlink_status);
+        if (res) {
+            if (msg.sysid != 0) {
+                add_known_sys_id(msg.sysid);
             }
+            process_mavlink_message(false, nullptr, msg);
         }
     }
-    start_serial_read();
 }

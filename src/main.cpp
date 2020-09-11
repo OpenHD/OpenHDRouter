@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iterator>
 #include <exception>
+#include <vector>
 
 #include "boost/asio.hpp"
 #include <boost/program_options.hpp>
@@ -17,6 +18,7 @@ int main(int argc, char *argv[]) {
 
         desc.add_options()("help", "produce help message")
                           ("tcp-port", boost::program_options::value<int>()->required(), "tcp server port")
+                          ("serial-baud,b", boost::program_options::value<int>()->required(), "serial port baud")
                           ("serial-port", boost::program_options::value<std::string>()->required(), "serial port to use");
 
         boost::program_options::variables_map vm;
@@ -42,7 +44,16 @@ int main(int argc, char *argv[]) {
 
         std::string serial_port = vm["serial-port"].as<std::string>();
 
-        router = new Router(io_service, tcp_port, serial_port);
+
+        if (vm.count("serial-baud") == 0) {
+            std::cerr << "No serial port baud rate provided" << std::endl;
+            exit(1);
+        }
+
+        int baud = vm["serial-baud"].as<int>();
+
+
+        router = new Router(io_service, tcp_port, baud, serial_port);
         router->setup();
         io_service.run();
     } catch (std::exception &ex) {
