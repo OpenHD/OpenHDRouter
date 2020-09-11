@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
 
         desc.add_options()("help", "produce help message")
                           ("tcp-port", boost::program_options::value<int>()->required(), "tcp server port")
+                          ("udp-endpoint,u", boost::program_options::value<std::vector<std::string>>()->multitoken(), "udp endpoint")
                           ("serial-baud,b", boost::program_options::value<int>()->default_value(115200), "serial port baud")
                           ("serial-port", boost::program_options::value<std::string>()->default_value(""), "serial port to use");
 
@@ -28,6 +29,12 @@ int main(int argc, char *argv[]) {
         if (vm.count("help")) {
             std::cerr << desc << std::endl;
             exit(0);
+        }
+
+        std::vector<std::string> udp_endpoints;
+
+        if (vm.count("udp-endpoint") > 0) {
+            udp_endpoints = vm["udp-endpoint"].as<std::vector<std::string > >();
         }
 
         if (vm.count("tcp-port") == 0) {
@@ -46,7 +53,7 @@ int main(int argc, char *argv[]) {
         }
 
         router = new Router(io_service, tcp_port, baud, serial_port);
-        router->setup();
+        router->setup(udp_endpoints);
         io_service.run();
     } catch (std::exception &ex) {
         std::cerr << "Error: " << ex.what() << std::endl;

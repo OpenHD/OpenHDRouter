@@ -12,11 +12,11 @@ ifdef $(DESTDIR)
 endif
 
 SYSTEM_INCLUDE = $(PREFIX)/include
-LDFLAGS = -L$(PREFIX)/lib -lboost_system -lboost_program_options
+LDFLAGS = -L$(PREFIX)/lib -lboost_system -lboost_program_options -lboost_regex
 
 
-openhd_router: serial.o router.o endpoint.o main.o 
-	g++ -std=c++11 -g -pthread -o openhd_router serial.o router.o endpoint.o main.o $(LDFLAGS)
+openhd_router: serial.o router.o endpoint.o udpendpoint.o tcpendpoint.o main.o 
+	g++ -std=c++11 -g -pthread -o openhd_router serial.o router.o endpoint.o udpendpoint.o tcpendpoint.o main.o $(LDFLAGS)
 
 main.o: $(SRC_DIR)/main.cpp
 	g++ -std=c++11  -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(INC_DIR) $(SRC_DIR)/main.cpp
@@ -26,6 +26,13 @@ router.o: $(SRC_DIR)/router.cpp
 
 endpoint.o: $(SRC_DIR)/endpoint.cpp
 	g++ -std=c++11 -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(INC_DIR) $(SRC_DIR)/endpoint.cpp
+
+tcpendpoint.o: $(SRC_DIR)/tcpendpoint.cpp
+	g++ -std=c++11 -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(INC_DIR) $(SRC_DIR)/tcpendpoint.cpp
+
+udpendpoint.o: $(SRC_DIR)/udpendpoint.cpp
+	g++ -std=c++11 -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(INC_DIR) $(SRC_DIR)/udpendpoint.cpp
+
 
 serial.o: $(SRC_DIR)/serial.cpp
 	g++ -std=c++11 -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(INC_DIR) $(SRC_DIR)/serial.cpp

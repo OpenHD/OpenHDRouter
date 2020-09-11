@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
@@ -10,6 +11,8 @@
 
 #include "router.h"
 #include "endpoint.h"
+#include "tcpendpoint.h"
+#include "udpendpoint.h"
 
 
 Router::Router(boost::asio::io_service &io_service, int tcp_port, int baud, std::string serial_port):
@@ -21,18 +24,25 @@ Router::Router(boost::asio::io_service &io_service, int tcp_port, int baud, std:
 }
 
 
-void Router::setup() {
+void Router::setup(std::vector<std::string> new_udp_endpoints) {
     std::cerr << "Router::setup()" << std::endl;
 
+    for (auto &_udp_endpoint : new_udp_endpoints) {
+        std::cerr << "Creating UDP endpoint: " << _udp_endpoint << std::endl;
+
+        UDPEndpoint::pointer new_connection = UDPEndpoint::create(this, m_io_service);
+        std::static_pointer_cast<UDPEndpoint>(new_connection)->setup(_udp_endpoint);
+        m_endpoints.push_back(new_connection);
+    }
 }
 
 
 void Router::start_accept() {
     std::cerr << "Router::start_accept()" << std::endl;
 
-    Endpoint::pointer new_connection = Endpoint::create(this, m_io_service);
+    TCPEndpoint::pointer new_connection = TCPEndpoint::create(this, m_io_service);
 
-    m_tcp_acceptor.async_accept(new_connection->get_socket(),
+    m_tcp_acceptor.async_accept(new_connection->get_tcp_socket(),
                                 boost::bind(&Router::handle_accept,
                                             this,
                                             new_connection,
@@ -40,7 +50,7 @@ void Router::start_accept() {
 }
 
 
-void Router::handle_accept(Endpoint::pointer new_connection, const boost::system::error_code& error) {
+void Router::handle_accept(TCPEndpoint::pointer new_connection, const boost::system::error_code& error) {
     std::cerr << "Router::handle_accept()" << std::endl;
 
     if (!error) {

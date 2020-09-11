@@ -9,15 +9,18 @@
 #include <openhd/mavlink.h>
 
 #include "endpoint.h"
+#include "tcpendpoint.h"
+#include "udpendpoint.h"
+
 #include "serial.h"
 
 class Router {
 public:
     Router(boost::asio::io_service &io_service, int tcp_port, int baud, std::string serial_port);
-    void setup();
+    void setup(std::vector<std::string> new_udp_endpoints);
 
     void start_accept();
-    void handle_accept(Endpoint::pointer new_connection, const boost::system::error_code& error);
+    void handle_accept(TCPEndpoint::pointer new_connection, const boost::system::error_code& error);
     void close_endpoint(std::shared_ptr<Endpoint> endpoint);
 
     void handle_serial_read(char* buffer,
