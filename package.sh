@@ -18,7 +18,7 @@ nameserver 8.8.4.4
 EOF
 fi
 
-apt -y install libasio-dev libboost-system-dev libboost-program-options-dev
+apt -y install libasio-dev libboost-system-dev libboost-program-options-dev libboost-regex-dev
 
 PACKAGE_NAME=openhd-router
 
