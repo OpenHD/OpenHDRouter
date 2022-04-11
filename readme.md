@@ -1,3 +1,5 @@
+## Archieved, can be found in the main repo under openhd-telemetry
+
 ## OpenHDouter
 
 This code is intended to act as a Mavlink router
